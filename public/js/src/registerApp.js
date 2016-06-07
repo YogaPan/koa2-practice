@@ -68,7 +68,38 @@ class RegisterApp extends Component {
 
     passwordNode.value = '';
     passwordConfirmNode.value = '';
-    return registerFail('asshole');
+
+    if (username.length === 0)
+      return registerFail('Enter username');
+    if (password.length === 0)
+      return registerFail('Enter password');
+    if (password !== passwordConfirm)
+      return registerFail('Confirm your password');
+    if (email.length === 0)
+      return registerFail('Enter email');
+
+    fetch('/register', {
+      method: 'POST',
+      credentials: 'same-origin',
+      headers: {
+        'accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        username,
+        password,
+        email
+      })
+    }).then((response) => response.json())
+      .then((response) => {
+        console.log(response);
+        console.log('test');
+        if (response.success) {
+          window.location.href = response.redirect;
+        } else {
+          return registerFail(response.errorMessage);
+        }
+      });
   }
 }
 

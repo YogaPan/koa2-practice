@@ -14,7 +14,28 @@ router
     await ctx.render('register.ejs');
   })
   .post('/register', async (ctx, next) => {
-    let newUser = new User(registerForm);
+    const body = ctx.request.body;
+
+    const newUser = new User({
+      username: body.username,
+      password: body.password,
+      email:    body.email
+    });
+
+    await newUser.cryptPassword();
+    try {
+      await newUser.save();
+      ctx.body = {
+        success: true,
+        redirect: '/'
+      };
+    } catch (err) {
+      console.log(err);
+      ctx.body = {
+        success: false,
+        errorMessage: err.message
+      };
+    }
   });
 
 router
@@ -39,6 +60,7 @@ router
 router
   .get('/logout', async (ctx, next) => {
     ctx.session = null;
+    ctx.redirect('/');
   });
 
 router

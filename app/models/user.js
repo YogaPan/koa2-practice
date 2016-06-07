@@ -47,13 +47,15 @@ UserSchema.methods.comparePassword = function(userPassword) {
 const UserModel = mongoose.model('User', UserSchema);
 
 UserSchema.pre('save', async function(next) {
-  let users = await UserModel.find({ name: this.name });
+  let users = await UserModel.find({ username: this.username });
   if (users.length !== 0)
     return next(new Error('User exists!'));
 
   users = await UserModel.find({ email: this.email });
   if (users.length !== 0)
     return next(new Error('Email Exists!'));
+
+  return next();
 });
 
 export default UserModel;
