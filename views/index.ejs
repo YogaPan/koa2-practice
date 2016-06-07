@@ -5,7 +5,14 @@
     <meta charset="utf-8" />
   </head>
   <body>
-    <p>Hello World</p>
-    <p><%= views %></p>
+    <% if (user) { %>
+      <a href="/logout">logout</a>
+      <a href="/post">post</a>
+      <p><%= user.username %></p>
+    <% } else { %>
+      <a href="/login">login</a>
+      <a href="/register">register</a>
+    <% } %>
+    <p>Index Page</p>
   </body>
 </html>

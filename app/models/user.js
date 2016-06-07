@@ -14,6 +14,8 @@ const UserSchema = mongoose.Schema({
     type: String,
     isRequired: true
   }
+}, {
+  timestamps: true
 });
 
 UserSchema.methods.cryptPassword = function() {

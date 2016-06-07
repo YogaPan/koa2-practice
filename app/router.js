@@ -5,8 +5,8 @@ import Post from './models/post';
 const router = Router();
 
 router.get('/', async (ctx, next) => {
-  ctx.session.views = ++ctx.session.views || 0;
-  await ctx.render('index.ejs', { views: ctx.session.views });
+  console.log(ctx.session);
+  await ctx.render('index.ejs', { user: ctx.session.user });
 });
 
 router
@@ -30,7 +30,6 @@ router
         redirect: '/'
       };
     } catch (err) {
-      console.log(err);
       ctx.body = {
         success: false,
         errorMessage: err.message
@@ -43,18 +42,31 @@ router
     await ctx.render('login.ejs');
   })
   .post('/login', async (ctx, next) => {
-    user = await User.findOne(loginForm);
-    if (user) {
-      ctx.body = {
-        success: true,
-        redirect: '/'
-      };
-    } else {
-      ctx.body = {
+    const body = ctx.request.body;
+
+    const user = await User.findOne({ username: body.username });
+
+    if (!user) {
+      return ctx.body = {
         success: false,
-        errorMessage: 'fuck'
+        errorMessage: 'No such user.'
       };
     }
+
+    const passwordMatch = await user.comparePassword(body.password);
+
+    if (!passwordMatch) {
+      return ctx.body = {
+        success: false,
+        errorMessage: 'Wrong password'
+      };
+    }
+
+    ctx.session.user = user;
+    return ctx.body = {
+      success: true,
+      redirect: '/'
+    };
   });
 
 router
@@ -64,7 +76,7 @@ router
   });
 
 router
-  .get('/post', async (ctx, next) => {
+  .get('/post', loginRequired, async (ctx, next) => {
     await ctx.render('post.ejs');
   });
 
@@ -85,5 +97,19 @@ router
       success: true
     };
   });
+
+async function loginRequired(ctx, next) {
+  if (ctx.session.user)
+    return next();
+  else
+    await ctx.redirect('/');
+}
+
+async function logoutRequired(ctx, next) {
+  if (ctx.session.user)
+    await ctx.redirect('/');
+  else
+    return next();
+}
 
 export default router;

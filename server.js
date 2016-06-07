@@ -25,10 +25,12 @@ app.use(views(path.join(__dirname, '/views'), {
   map: { ejs: 'ejs' }
 }));
 
+// Catch errors and display message.
 app.use(async (ctx, next) => {
   try {
     await next();
   } catch(err) {
+    console.log(err);
     ctx.body = { message: err.message };
     ctx.status = err.status || 500;
   }

@@ -57,10 +57,38 @@ class LoginApp extends Component {
 
     const { loginFail } = this.props.actions;
 
+    const usernameNode = this.refs.username;
     const passwordNode = this.refs.password;
+
+    const username = usernameNode.value;
+    const password = passwordNode.value;
+
     passwordNode.value = '';
 
-    return loginFail('asshole');
+    if (username.length === 0)
+      return loginFail('Enter Username');
+    if (password.length === 0)
+      return loginFail('Enter password');
+
+    fetch('/login', {
+      method: 'POST',
+      credentials: 'same-origin',
+      headers: {
+        'accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        username,
+        password
+      })
+    }).then((response) => response.json())
+      .then((response) => {
+        if (response.success) {
+          window.location.href = response.redirect;
+        } else {
+          return loginFail(response.errorMessage);
+        }
+      });
   }
 }
 
