@@ -33,16 +33,19 @@ const store = createStore(loginReducer);
 class LoginApp extends Component {
   constructor(props) {
     super(props);
-    this.handleSubmit = this.handleSubmit.bind(this);
   }
+
+  static propTypes = {
+    errorMessage: PropTypes.string.isRequired
+  };
 
   render() {
     const { errorMessage } = this.props;
 
     return (
       <form id="loginForm"
-            method="POST"
-            onSubmit={this.handleSubmit}
+        method="POST"
+        onSubmit={::this.handleSubmit}
       >
         <h1>{errorMessage}</h1>
         Username: <input type="text" ref="username" /><br/>

@@ -33,14 +33,17 @@ const store = createStore(registerReducer);
 class RegisterApp extends Component {
   constructor(props) {
     super(props);
-    this.handleSubmit = this.handleSubmit.bind(this);
   }
+
+  static propTypes = {
+    errorMessage: PropTypes.string.isRequired
+  };
 
   render() {
     const { errorMessage } = this.props;
 
     return (
-      <form id="registerForm" method="POST" onSubmit={this.handleSubmit}>
+      <form id="registerForm" method="POST" onSubmit={::this.handleSubmit}>
         <h1>{errorMessage}</h1>
         Username: <input type="text" ref="username" /><br/>
         Password: <input type="password" ref="password" /><br/>

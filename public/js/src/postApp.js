@@ -44,8 +44,11 @@ const store = createStore(postReducer);
 class PostApp extends Component {
   constructor(props) {
     super(props);
-    this.handleSubmit = this.handleSubmit.bind(this);
   }
+
+  static propTypes = {
+    errorMessage: PropTypes.string.isRequired
+  };
 
   render() {
     const { errorMessage } = this.props;
