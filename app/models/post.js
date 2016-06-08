@@ -1,9 +1,9 @@
 import mongoose from 'mongoose';
 
 const PostSchema = mongoose.Schema({
-  // TODO
-  username: {
-
+  _creator: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
   },
   title: {
     type: String,

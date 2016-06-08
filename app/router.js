@@ -16,14 +16,29 @@ router
   .post('/register', async (ctx, next) => {
     const body = ctx.request.body;
 
+    let users = await User.find({ username: body.username });
+    if (users.length !== 0) {
+      return ctx.body = {
+        success: false,
+        errorMessage: 'User Exists!'
+      };
+    }
+    users = await User.find({ email: body.email });
+    if (users.length !== 0) {
+      return ctx.body = {
+        success: false,
+        errorMessage: 'Email has been registered!'
+      };
+    }
+
     const newUser = new User({
       username: body.username,
       password: body.password,
       email:    body.email
     });
 
-    await newUser.cryptPassword();
     try {
+      await newUser.cryptPassword();
       await newUser.save();
       ctx.body = {
         success: true,
@@ -88,11 +103,18 @@ router
   })
   .post('/posts/', async (ctx, next) => {
     const body = ctx.request.body;
+    const creator = await User.findById(ctx.session.user._id);
+
     const newPost = new Post({
+      _creator: creator._id,
       title: body.title,
       content: body.content
     });
+
+    creator.posts.push(newPost._id);
+
     await newPost.save();
+    await creator.save();
     ctx.body = {
       success: true
     };

@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import bcrypt from 'bcrypt';
 
-const UserSchema = mongoose.Schema({
+const userSchema = mongoose.Schema({
   username: {
     type: String,
     isRequired: true
@@ -13,12 +13,13 @@ const UserSchema = mongoose.Schema({
   email: {
     type: String,
     isRequired: true
-  }
+  },
+  posts: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Post' }]
 }, {
   timestamps: true
 });
 
-UserSchema.methods.cryptPassword = function() {
+userSchema.methods.cryptPassword = function() {
   return new Promise((resolve, reject) => {
     bcrypt.genSalt(10, (err, salt) => {
       if (err)
@@ -35,7 +36,7 @@ UserSchema.methods.cryptPassword = function() {
   });
 };
 
-UserSchema.methods.comparePassword = function(userPassword) {
+userSchema.methods.comparePassword = function(userPassword) {
   return new Promise((resolve, reject) => {
     bcrypt.compare(userPassword, this.password, (err, isPasswordMatch) => {
       if (err)
@@ -46,18 +47,6 @@ UserSchema.methods.comparePassword = function(userPassword) {
   });
 };
 
-const UserModel = mongoose.model('User', UserSchema);
+const User = mongoose.model('User', userSchema);
 
-UserSchema.pre('save', async function(next) {
-  let users = await UserModel.find({ username: this.username });
-  if (users.length !== 0)
-    return next(new Error('User exists!'));
-
-  users = await UserModel.find({ email: this.email });
-  if (users.length !== 0)
-    return next(new Error('Email Exists!'));
-
-  return next();
-});
-
-export default UserModel;
+export default User;
