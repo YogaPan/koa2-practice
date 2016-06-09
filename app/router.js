@@ -98,7 +98,7 @@ router
 // Restful api
 router
   .get('/posts/', async (ctx, next) => {
-    const posts = await Post.find();
+    const posts = await Post.find().populate('_creator', 'username');
     ctx.body = posts;
   })
   .post('/posts/', async (ctx, next) => {
