@@ -91,6 +91,14 @@ router
   });
 
 router
+  .get('/profile/:username', async (ctx, next) => {
+    const user = await User.findOne({ username: ctx.params.username });
+    if (user == null)
+      return ctx.status = 404;
+    await ctx.render('profile.ejs', { user: user });
+  });
+
+router
   .get('/post', loginRequired, async (ctx, next) => {
     await ctx.render('post.ejs');
   });

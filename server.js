@@ -25,14 +25,53 @@ app.use(views(path.join(__dirname, '/views'), {
   map: { ejs: 'ejs' }
 }));
 
-// Catch errors and display message.
+// Catch all unhandled server internal errors and display message.
 app.use(async (ctx, next) => {
   try {
     await next();
   } catch(err) {
-    console.log(err);
-    ctx.body = { message: err.message };
     ctx.status = err.status || 500;
+
+    // Show message to server side.
+    console.log(err);
+
+    // Show message to client side.
+    // Note: This only enable when in debug mode.
+    switch (ctx.accepts('html', 'json')) {
+      case 'html':
+        ctx.type = 'html';
+        ctx.body = `<p>${err.message}</p>`;
+      case 'json':
+        ctx.type = 'json';
+        ctx.body = { message: err.message };
+      default:
+        ctx.type = 'text';
+        ctx.body = err.message;
+    }
+  }
+});
+
+// 404 Not found page
+app.use(async (ctx, next) => {
+  await next();
+
+  if (ctx.status != 404)
+    return;
+
+  ctx.status = 404;
+
+  switch (ctx.accepts('html', 'json')) {
+    case 'html':
+      ctx.type = 'html';
+      ctx.body = '<p>Page Not Found</p>'
+      break;
+    case 'json':
+      ctx.type = 'json';
+      ctx.body = { message: 'Page Not Found' };
+      break;
+    default:
+      ctx.type = 'text';
+      ctx.body = 'Page Not Found';
   }
 });
 
