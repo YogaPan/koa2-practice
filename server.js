@@ -6,24 +6,32 @@ import bodyParser from 'koa-bodyparser';
 import session from 'koa-session';
 import convert from 'koa-convert';
 
-import path from 'path';
 import mongoose from 'mongoose';
+import path from 'path';
 import router from './app/router';
 
+// Connect To mongodb use test db.
 mongoose.connect('mongodb://localhost/test');
 
 const app = new Koa();
 
-app.keys = ['You never know'];
-app.use(convert(session(app)));
-
+// Log all request, include status and spended time.
 app.use(logger());
-app.use(serve(path.join(__dirname, '/public')));
+
+// Parse post form as json.
 app.use(bodyParser());
 
+// Use ejs template engine.
 app.use(views(path.join(__dirname, '/views'), {
   map: { ejs: 'ejs' }
 }));
+
+// Serve static files in "public" directory.
+app.use(serve(path.join(__dirname, '/public')));
+
+// Use koa-session and set secret key.
+app.keys = ['You never know'];
+app.use(convert(session(app)));
 
 // Catch all unhandled server internal errors and display message.
 app.use(async (ctx, next) => {
@@ -75,10 +83,14 @@ app.use(async (ctx, next) => {
   }
 });
 
+// Use koa-router.
 app
   .use(router.routes())
   .use(router.allowedMethods());
 
-app.listen(8080, () => {
-  console.log('Server listen on port 8080');
+// Start listening.
+const port = process.env.PORT || 8080;
+
+app.listen(port, () => {
+  console.log(`Server listen on port ${port}`);
 });
