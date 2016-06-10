@@ -75,7 +75,7 @@ class PostItem extends Component {
         <p>{title}</p>
         <p>{createdAt}</p>
         <p>{content}</p>
-        <p>{_creator.username}</p>
+        <a href={'/profile/' + _creator.username}>{_creator.username}</a>
       </div>
     );
   }
