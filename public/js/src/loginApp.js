@@ -55,7 +55,7 @@ class LoginApp extends Component {
     );
   }
 
-  handleSubmit(e) {
+  async handleSubmit(e) {
     e.preventDefault();
 
     const { loginFail } = this.props.actions;
@@ -73,7 +73,7 @@ class LoginApp extends Component {
     if (password.length === 0)
       return loginFail('Enter password');
 
-    fetch('/login', {
+    let response = await fetch('/login', {
       method: 'POST',
       credentials: 'same-origin',
       headers: {
@@ -84,14 +84,13 @@ class LoginApp extends Component {
         username,
         password
       })
-    }).then((response) => response.json())
-      .then((response) => {
-        if (response.success) {
-          window.location.href = response.redirect;
-        } else {
-          return loginFail(response.errorMessage);
-        }
-      });
+    });
+
+    response = await response.json();
+    if (response.success)
+      window.location.href = response.redirect;
+    else
+      return loginFail(response.errorMessage);
   }
 }
 

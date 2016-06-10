@@ -95,19 +95,18 @@ class PostList extends Component {
     }).isRequired).isRequired
   };
 
-  componentDidMount() {
+  async componentDidMount() {
     const { postLoad } = this.props
-    fetch('/posts/', {
+    let response = await fetch('/posts/', {
       method: 'GET',
       credentials: 'same-origin',
       headers: {
         'accept': 'application/json',
         'Content-Type': 'application/json'
       }
-    }).then((response) => response.json())
-      .then((response) => {
-        return postLoad(response);
-      });
+    });
+    response = await response.json();
+    return postLoad(response);
   }
 
   render() {

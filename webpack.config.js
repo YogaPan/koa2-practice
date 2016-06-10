@@ -1,8 +1,8 @@
 module.exports = {
   entry: {
-    loginApp: './public/js/src/loginApp.js',
-    registerApp: './public/js/src/registerApp.js',
-    postApp: './public/js/src/postApp.js'
+    loginApp: ['babel-polyfill', './public/js/src/loginApp.js'],
+    registerApp: ['babel-polyfill', './public/js/src/registerApp.js'],
+    postApp: ['babel-polyfill', './public/js/src/postApp.js']
   },
   output: {
     path: './public/js/dist',
@@ -14,12 +14,12 @@ module.exports = {
         test: /\.js$/,
         loader: 'babel',
         query: {
-          presets: ['react', 'es2015', 'stage-0']
+          presets: ['react', 'es2015', 'stage-0', 'stage-3']
         }
       }
     ]
   },
   resolve: {
     extensions: ['', '.js', '.json']
-  }
+  },
 }

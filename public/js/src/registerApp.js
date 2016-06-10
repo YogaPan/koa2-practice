@@ -54,7 +54,7 @@ class RegisterApp extends Component {
     );
   }
 
-  handleSubmit(e) {
+  async handleSubmit(e) {
     e.preventDefault();
 
     const { registerFail } = this.props.actions;
@@ -81,7 +81,7 @@ class RegisterApp extends Component {
     if (email.length === 0)
       return registerFail('Enter email');
 
-    fetch('/register', {
+    let response = await fetch('/register', {
       method: 'POST',
       credentials: 'same-origin',
       headers: {
@@ -93,16 +93,13 @@ class RegisterApp extends Component {
         password,
         email
       })
-    }).then((response) => response.json())
-      .then((response) => {
-        console.log(response);
-        console.log('test');
-        if (response.success) {
-          window.location.href = response.redirect;
-        } else {
-          return registerFail(response.errorMessage);
-        }
-      });
+    });
+
+    response = await response.json();
+    if (response.success)
+      window.location.href = response.redirect;
+    else
+      return registerFail(response.errorMessage);
   }
 }
 
