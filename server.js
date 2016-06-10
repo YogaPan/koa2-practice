@@ -13,7 +13,7 @@ import router from './app/router';
 // Connect To mongodb use test db.
 mongoose.connect('mongodb://localhost/test');
 
-const app = new Koa();
+const app = new Koa;
 
 // Log all request, include status and spended time.
 app.use(logger());
@@ -34,6 +34,7 @@ app.keys = ['You never know'];
 app.use(convert(session(app)));
 
 // Catch all unhandled server internal errors and display message.
+//app.env = 'product'
 app.use(async (ctx, next) => {
   try {
     await next();
@@ -44,17 +45,32 @@ app.use(async (ctx, next) => {
     console.log(err);
 
     // Show message to client side.
-    // Note: This only enable when in debug mode.
-    switch (ctx.accepts('html', 'json')) {
-      case 'html':
-        ctx.type = 'html';
-        ctx.body = `<p>${err.message}</p>`;
-      case 'json':
-        ctx.type = 'json';
-        ctx.body = { message: err.message };
-      default:
-        ctx.type = 'text';
-        ctx.body = err.message;
+    // Note: This only enable when in development env.
+    // Get rid of this features, set app.env = 'product'.
+    if ('development' == app.env) {
+      switch (ctx.accepts('html', 'json')) {
+        case 'html':
+          ctx.type = 'html';
+          ctx.body = `<p>${err.message}</p>`;
+        case 'json':
+          ctx.type = 'json';
+          ctx.body = { message: err.message };
+        default:
+          ctx.type = 'text';
+          ctx.body = err.message;
+      }
+    } else {
+      switch (ctx.accepts('html', 'json')) {
+        case 'html':
+          ctx.type = 'html';
+          ctx.body = '<p>Server Internal Error.</p>'
+        case 'json':
+          ctx.type = 'json';
+          ctx.body = { message: 'Server Internal Error.' };
+        default:
+          ctx.type = 'text';
+          ctx.body = 'Server Internal Error.';
+      }
     }
   }
 });
