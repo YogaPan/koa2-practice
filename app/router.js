@@ -4,16 +4,16 @@ import Post from './models/post';
 
 const router = Router();
 
-router.get('/', async (ctx, next) => {
+router.get('/', async (ctx) => {
   console.log(ctx.session);
   await ctx.render('index.ejs', { user: ctx.session.user });
 });
 
 router
-  .get('/register', async (ctx, next) => {
+  .get('/register', async (ctx) => {
     await ctx.render('register.ejs');
   })
-  .post('/register', async (ctx, next) => {
+  .post('/register', async (ctx) => {
     const body = ctx.request.body;
 
     let users = await User.find({ username: body.username });
@@ -53,10 +53,10 @@ router
   });
 
 router
-  .get('/login', async (ctx, next) => {
+  .get('/login', async (ctx) => {
     await ctx.render('login.ejs');
   })
-  .post('/login', async (ctx, next) => {
+  .post('/login', async (ctx) => {
     const body = ctx.request.body;
 
     const user = await User.findOne({ username: body.username });
@@ -85,13 +85,13 @@ router
   });
 
 router
-  .get('/logout', async (ctx, next) => {
+  .get('/logout', async (ctx) => {
     ctx.session = null;
     ctx.redirect('/');
   });
 
 router
-  .get('/profile/:username', async (ctx, next) => {
+  .get('/profile/:username', async (ctx) => {
     const user = await User.findOne({ username: ctx.params.username });
     if (user == null)
       return ctx.status = 404;
@@ -99,17 +99,17 @@ router
   });
 
 router
-  .get('/post', loginRequired, async (ctx, next) => {
+  .get('/post', loginRequired, async (ctx) => {
     await ctx.render('post.ejs');
   });
 
 // Restful api
 router
-  .get('/posts/', async (ctx, next) => {
+  .get('/posts/', async (ctx) => {
     const posts = await Post.find().populate('_creator', 'username');
     ctx.body = posts;
   })
-  .post('/posts/', async (ctx, next) => {
+  .post('/posts/', async (ctx) => {
     const body = ctx.request.body;
     const creator = await User.findById(ctx.session.user._id);
 

@@ -81,7 +81,6 @@ app.use(async (ctx, next) => {
 
   if (ctx.status != 404)
     return;
-
   ctx.status = 404;
 
   switch (ctx.accepts('html', 'json')) {
