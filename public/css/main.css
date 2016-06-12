@@ -6,9 +6,16 @@ form, input, textarea, th, td, pre {
   margin: 0;
   padding: 0;
 }
+div {
+  background-size: 100% auto;
+}
 h1, h2, h3, h4, h5, h6 {
   font-size: 100%,
   font-weight: normal;
+  font-family: sans-serif;
+}
+p {
+  font-family: sans-serif;
 }
 a {
   text-decoration: none;
@@ -16,20 +23,27 @@ a {
 ol, ul {
   list-style: none;
 }
+input {
+  display: inline-block;
+  font-family: sans-serif;
+  border: 1px solid #b0b0b0;
+  padding: 3px 5px 4px;
+  color: #979797;
+  box-shadow: none;
+  appearance: none;
+  width: 190px;
+}
+input:focus {
+  outline: none;
+}
 table {
   border-collapse: collapse;
   border-spacing: 0;
 }
-input{
-  border: 1px solid #b0b0b0;
-  padding: 3px 5px 4px;
-  color: #979797;
-  width: 190px;
-}
 fieldset, img {
   border: 0;
 }
-address,caption,cite,code,dfn,th,var {
+address, caption, cite, code, dfn, th, var {
   font-style: normal;
   font-weight: normal;
 }
@@ -71,7 +85,33 @@ address,caption,cite,code,dfn,th,var {
  * Container
  * ------------------------------------------------ */
 .container {
-  height: 500px;
+  /* TODO */
+}
+
+/* -------------------------------------------------
+ * Theme
+ * ------------------------------------------------- */
+.theme {
+  height: 800px;
+  background-image: url('https://mmtstock.s3.amazonaws.com/photos/P2271485.jpg');
+}
+
+input {
+  /* style */
+  border-radius: 10px;
+//  background-color: #2d3035;
+  //color: white;
+  width: 190px;
+  font-size: 15px;
+  padding: 10px;
+  border: 2px solid #dcdcdc;
+
+  /* margin and position */
+  margin: 10px 10px;
+}
+
+#loginForm {
+  background-color: red;
 }
 
 h1 {
