@@ -1,18 +1,28 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
   <head>
-    <title></title>
+    <title>首頁</title>
     <meta charset="utf-8" />
+    <link rel=stylesheet href="/css/main.css" />
   </head>
   <body>
-    <% if (user) { %>
-      <a href="/logout">logout</a>
-      <a href="/post">post</a>
-      <p><%= user.username %></p>
-    <% } else { %>
-      <a href="/login">login</a>
-      <a href="/register">register</a>
-    <% } %>
-    <p>Index Page</p>
+    <div class="navbar">
+      <ul class="pull-left">
+        <li><a href="/">Home</a></li>
+        <% if (user) { %>
+          <li><a href="/profile/<%= user.username %>"><%= user.username %></a></li>
+        <% } %>
+      </ul>
+      <ul class="pull-right">
+        <% if (user) { %>
+          <li><a href="/logout">logout</a></li>
+          <li><a href="/post">post</a></li>
+        <% } else { %>
+          <li><a href="/login">login</a></li>
+          <li><a href="/register">register</a></li>
+        <% } %>
+      </ul>
+    </div>
+    <h1>Home Page</h1>
   </body>
 </html>

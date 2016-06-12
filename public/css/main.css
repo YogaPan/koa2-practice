@@ -1,0 +1,66 @@
+/* Reset elements margin and padding */
+html, body, div, ul, ol, li, p, h1, h2, h3, h4, h5, h6,
+form, input, textarea, th, td, pre {
+  margin: 0;
+  padding: 0;
+}
+h1, h2, h3, h4, h5, h6 {
+  font-size: 100%,
+  font-weight: normal;
+}
+a {
+  text-decoration: none;
+}
+ol, ul {
+  list-style: none;
+}
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+input{
+  border: 1px solid #b0b0b0;
+  padding: 3px 5px 4px;
+  color: #979797;
+  width: 190px;
+}
+fieldset, img {
+  border: 0;
+}
+address,caption,cite,code,dfn,th,var {
+  font-style: normal;
+  font-weight: normal;
+}
+
+/* Navigation Bar. */
+.navbar {
+  background-color: #30A9DE;
+  height: 50px;
+}
+.navbar ul {
+  position: absolute;
+  top: 15px;
+}
+.navbar .pull-left {
+  position: absolute;
+  left: 100px;
+}
+.navbar .pull-right {
+  posotion: absolute;
+  right: 100px;
+}
+.navbar li {
+  color: white;
+  font-size: 25px;
+  display: inline;
+  padding: 0 32px;
+}
+
+
+h1 {
+  color: red;
+}
+
+a {
+  color: white;
+}
