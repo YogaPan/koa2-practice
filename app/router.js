@@ -4,7 +4,7 @@ import Post from './models/post';
 
 const router = Router();
 
-router.get('/', async (ctx) => {
+router.get('/', loginRequired, async (ctx) => {
   console.log(ctx.session);
   await ctx.render('index.ejs', { user: ctx.session.user });
 });
@@ -80,7 +80,7 @@ router
     ctx.session.user = user;
     return ctx.body = {
       success: true,
-      redirect: '/'
+      redirect: body.next
     };
   });
 
@@ -132,7 +132,7 @@ async function loginRequired(ctx, next) {
   if (ctx.session.user)
     return next();
   else
-    await ctx.redirect('/');
+    await ctx.redirect(`/login?next=${ctx.path}`);
 }
 
 async function logoutRequired(ctx, next) {
