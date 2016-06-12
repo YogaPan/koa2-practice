@@ -87,7 +87,7 @@ router
 router
   .get('/logout', async (ctx) => {
     ctx.session = null;
-    ctx.redirect('/');
+    ctx.redirect('/login');
   });
 
 router
