@@ -1,0 +1,8 @@
+* Basket Chatting Website
+
+** Link
+
+[[http://www.w3schools.com/][W3C School]]
+[[http://www.lolcolors.com/][LolColors]]
+
+** TODO
