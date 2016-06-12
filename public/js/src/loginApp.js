@@ -75,6 +75,7 @@ class LoginApp extends Component {
 
     const username = usernameNode.value;
     const password = passwordNode.value;
+    const next     = getParameterByName('next');
 
     passwordNode.value = '';
 
@@ -93,7 +94,7 @@ class LoginApp extends Component {
       body: JSON.stringify({
         username,
         password,
-        next: getParameterByName('next')
+        next: next ? next : '/'
       })
     });
 
