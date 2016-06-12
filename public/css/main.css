@@ -1,4 +1,6 @@
-/* Reset elements margin and padding */
+/* ----------------------------------------------
+ * Reset elements margin and padding
+ * ---------------------------------------------- */
 html, body, div, ul, ol, li, p, h1, h2, h3, h4, h5, h6,
 form, input, textarea, th, td, pre {
   margin: 0;
@@ -32,7 +34,9 @@ address,caption,cite,code,dfn,th,var {
   font-weight: normal;
 }
 
-/* Navigation Bar. */
+/* -------------------------------------------------
+ * Navigation Bar
+ * ------------------------------------------------- */
 .navbar {
   background-color: #30A9DE;
   height: 50px;
@@ -56,6 +60,19 @@ address,caption,cite,code,dfn,th,var {
   padding: 0 32px;
 }
 
+/* -----------------------------------------------
+ * Side Bar.
+ * ----------------------------------------------- */
+.sidebar {
+  /* TODO */
+}
+
+/* ------------------------------------------------
+ * Container
+ * ------------------------------------------------ */
+.container {
+  height: 500px;
+}
 
 h1 {
   color: red;
