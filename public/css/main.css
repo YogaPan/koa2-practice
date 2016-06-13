@@ -8,12 +8,14 @@ form, input, textarea, th, td, pre {
 }
 div {
   background-size: 100% auto;
+  background-repeat: no-repeat;
   box-sizing: border-box;
 }
 h1, h2, h3, h4, h5, h6 {
   font-size: 100%,
   font-weight: normal;
   font-family: sans-serif;
+  text-align: center;
 }
 p {
   font-family: sans-serif;
@@ -63,19 +65,19 @@ address, caption, cite, code, dfn, th, var {
   background-color: #30A9DE;
   height: 50px;
 }
-.navbar ul {
+.navbar > ul {
   position: absolute;
   top: 15px;
 }
-.navbar .pull-left {
+.navbar > ul.pull-left {
   position: absolute;
   left: 100px;
 }
-.navbar .pull-right {
+.navbar > ul.pull-right {
   posotion: absolute;
   right: 100px;
 }
-.navbar li {
+.navbar > ul > li {
   color: white;
   font-size: 25px;
   display: inline;
