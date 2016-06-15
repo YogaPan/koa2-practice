@@ -2,7 +2,8 @@ module.exports = {
   entry: {
     loginApp: ['babel-polyfill', './public/js/src/loginApp.js'],
     registerApp: ['babel-polyfill', './public/js/src/registerApp.js'],
-    postApp: ['babel-polyfill', './public/js/src/postApp.js']
+    postApp: ['babel-polyfill', './public/js/src/postApp.js'],
+    chatApp: ['babel-polyfill', './public/js/src/chatApp.js']
   },
   output: {
     path: './public/js/dist',

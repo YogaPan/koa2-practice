@@ -1,12 +1,13 @@
-import Router from 'koa-router';
-import User from './models/user';
-import Post from './models/post';
-
-const router = Router();
+const router = require('koa-router')();
+const User = require('./models/user');
+const Post = require('./models/post');
 
 router.get('/', loginRequired, async (ctx) => {
-  console.log(ctx.session);
   await ctx.render('index.ejs', { user: ctx.session.user });
+});
+
+router.get('/chat', async (ctx) => {
+  await ctx.render('chat.ejs');
 });
 
 router
@@ -142,4 +143,4 @@ async function logoutRequired(ctx, next) {
     return next();
 }
 
-export default router;
+module.exports = router;
