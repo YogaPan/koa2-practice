@@ -8,6 +8,8 @@ const socket = io();
 
 // Action Types.
 const MESSAGE_RECIEVE = 'MESSAGE_RECIEVE';
+const JOIN_CHAT = 'JOIN_CHAT';
+const LEAVE_CHAT = 'LEAVE_CHAT';
 
 // Action Creators.
 function messageRecieve(message) {
@@ -17,8 +19,25 @@ function messageRecieve(message) {
   };
 }
 
+function joinChat(count, message) {
+  return {
+    type: JOIN_CHAT,
+    count,
+    message
+  };
+}
+
+function leaveChat(count, message) {
+  return {
+    type: LEAVE_CHAT,
+    count,
+    message
+  };
+}
+
 const initialState = {
-  messages: []
+  messages: [],
+  count: 0
 };
 
 // Reducer
@@ -27,6 +46,16 @@ function chatReducer(state = initialState, action = {}) {
     case MESSAGE_RECIEVE:
       return Object.assign({}, state, {
         messages: state.messages.concat(action.message)
+      });
+    case JOIN_CHAT:
+      return Object.assign({}, state, {
+        messages: state.messages.concat(action.message),
+        count: action.count
+      });
+    case LEAVE_CHAT:
+      return Object.assign({}, state, {
+        messages: state.messages.concat(action.message),
+        count: action.count
       });
     default:
       return state;
@@ -100,7 +129,7 @@ class ChatForm extends Component {
     const messageNode = this.refs.message;
     const message = messageNode.value;
 
-    socket.emit('chat message', message);
+    socket.emit('public', message);
 
     messageNode.value = '';
   }
@@ -110,7 +139,12 @@ class ChatForm extends Component {
 class ChatApp extends Component {
   static propTypes = {
     messages: PropTypes.arrayOf(PropTypes.string.isRequired).isRequired,
-    messageRecieve: PropTypes.func.isRequired
+    count: PropTypes.number.isRequired,
+    actions: PropTypes.shape({
+      messageRecieve: PropTypes.func.isRequired,
+      joinChat: PropTypes.func.isRequired,
+      leaveChat: PropTypes.func.isRequired
+    }).isRequired
   };
 
   constructor(...args) {
@@ -118,18 +152,31 @@ class ChatApp extends Component {
   }
 
   componentDidMount() {
-    const { messageRecieve } = this.props.actions;
+    const {
+      messageRecieve,
+      joinChat,
+      leaveChat
+    } = this.props.actions;
 
-    socket.on('chat message', (message) => {
+    socket.on('public', message => {
       messageRecieve(message);
+    });
+
+    socket.on('join', count => {
+      joinChat(count, 'One User Join this chat!!');
+    });
+
+    socket.on('leave', count => {
+      leaveChat(count, 'One User leave this chat room.');
     });
   }
 
   render() {
-    const { messages } = this.props;
+    const { messages, count } = this.props;
     return (
       <div>
         <h1>chatApp</h1>
+        <h2>{count} Users in this chat room. Enjoy!</h2>
         <MessageList messages={messages} />
         <ChatForm />
       </div>
@@ -139,14 +186,17 @@ class ChatApp extends Component {
 
 function mapStateToProps(state) {
   return {
-    messages: state.messages
+    messages: state.messages,
+    count: state.count
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
     actions: bindActionCreators({
-      messageRecieve
+      messageRecieve,
+      joinChat,
+      leaveChat
     }, dispatch)
   };
 }

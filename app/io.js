@@ -1,13 +1,21 @@
-module.exports = function(io) {
-  io.on('connection', socket => {
-    io.emit('chat message', 'One user join chatting.');
+let count = 0;
 
+module.exports = function(io) {
+  // Get client socket and start listening.
+  io.on('connection', socket => {
+    // When a new user join chatting.
+    count++;
+    io.emit('join', count);
+
+    // When a user leave this chat.
     socket.on('disconnect', () => {
-      io.emit('chat message', 'One user exit.')
+      count--;
+      io.emit('leave', count);
     });
 
-    socket.on('chat message', message => {
-      io.emit('chat message', message);
+    // When someone say something.
+    socket.on('public', message => {
+      io.emit('public', message);
     });
   });
 }
