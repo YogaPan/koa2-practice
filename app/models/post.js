@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+const mongoose = require('mongoose');
 
 const PostSchema = mongoose.Schema({
   _creator: {
@@ -23,6 +23,6 @@ PostSchema.methods.test = function() {
 
 }
 
-const PostModel = mongoose.model('Post', PostSchema);
+const Post = mongoose.model('Post', PostSchema);
 
-export default PostModel;
+module.exports = Post;

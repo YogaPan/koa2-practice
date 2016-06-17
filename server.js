@@ -33,7 +33,7 @@ app.use(serve(path.join(__dirname, '/public')));
 
 // Set secret key and use koa-session.
 // NOTE: In product, this secret key MUST CHANGE and add to .gitignore file.
-app.keys = ['You never know.'];
+app.keys = require('./app/config').secret_keys;
 app.use(convert(session(app)));
 
 // Catch all unhandled server internal errors and display message.
