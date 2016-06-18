@@ -60,29 +60,31 @@ router
   .post('/login', async ctx => {
     const body = ctx.request.body;
 
-    const user = await User.findOne({ username: body.username });
-
-    if (!user) {
-      return ctx.body = {
-        success: false,
-        errorMessage: 'No such user.'
-      };
-    }
-
-    const passwordMatch = await user.comparePassword(body.password);
-
-    if (!passwordMatch) {
-      return ctx.body = {
-        success: false,
-        errorMessage: 'Wrong password'
-      };
-    }
-
-    ctx.session.user = user;
-    return ctx.body = {
-      success: true,
-      redirect: body.next
-    };
+    return login({
+      username: body.username,
+      password: body.password,
+      loginSuccess: function (user) {
+        ctx.session.user = user;
+        return ctx.body = {
+          success: true,
+          redirect: body.next
+        };
+      },
+      loginFail: function(type) {
+        switch (type) {
+          case 'usernameError':
+            return ctx.body = {
+              success: false,
+              errorMessage: 'No such user.'
+            };
+          case 'passwordError':
+            return ctx.body = {
+              success: false,
+              errorMessage: 'Wrong password'
+            };
+        }
+      }
+    });
   });
 
 router
@@ -141,6 +143,16 @@ async function logoutRequired(ctx, next) {
     await ctx.redirect('/');
   else
     return next();
+}
+
+async function login(action) {
+  const user = await User.findOne({ username: action.username });
+  if (!user) return action.loginFail('usernameError');
+
+  const passwordMatch = await user.comparePassword(action.password);
+  if (!passwordMatch) return action.loginFail('passwordError');
+
+  return action.loginSuccess(user);
 }
 
 module.exports = router;
