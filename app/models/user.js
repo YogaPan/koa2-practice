@@ -22,15 +22,13 @@ const userSchema = mongoose.Schema({
 userSchema.methods.cryptPassword = function() {
   return new Promise((resolve, reject) => {
     bcrypt.genSalt(10, (err, salt) => {
-      if (err)
-        return reject(err);
+      if (err) return reject(err);
 
       bcrypt.hash(this.password, salt, (err, hash) => {
-        if (err)
-          return reject(err);
+        if (err) return reject(err);
 
         this.password = hash;
-        resolve();
+        return resolve();
       });
     });
   });

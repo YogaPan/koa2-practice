@@ -17,39 +17,31 @@ router
   .post('/register', async ctx => {
     const body = ctx.request.body;
 
-    let users = await User.find({ username: body.username });
-    if (users.length !== 0) {
-      return ctx.body = {
-        success: false,
-        errorMessage: 'User Exists!'
-      };
-    }
-    users = await User.find({ email: body.email });
-    if (users.length !== 0) {
-      return ctx.body = {
-        success: false,
-        errorMessage: 'Email has been registered!'
-      };
-    }
-
-    const newUser = new User({
+    const { type, user } = await register({
       username: body.username,
       password: body.password,
       email:    body.email
     });
 
-    try {
-      await newUser.cryptPassword();
-      await newUser.save();
-      ctx.body = {
-        success: true,
-        redirect: '/'
-      };
-    } catch (err) {
-      ctx.body = {
-        success: false,
-        errorMessage: err.message
-      };
+    switch (type) {
+      case 'success':
+        ctx.session.user = user;
+        return ctx.body = {
+          success: true,
+          redirect: '/'
+        };
+      case 'usernameError':
+        return ctx.body = {
+          success: false,
+          errorMessage: 'User Exists!'
+        };
+      case 'emailError':
+        return ctx.body = {
+          success: false,
+          errorMessage: 'Email has been registered!'
+        };
+      default:
+        throw new Error('FATAL ERROR');
     }
   });
 
@@ -60,31 +52,31 @@ router
   .post('/login', async ctx => {
     const body = ctx.request.body;
 
-    return await login({
+    const { type, user } = await login({
       username: body.username,
       password: body.password,
-      loginSuccess: function (user) {
+    });
+
+    switch (type) {
+      case 'success':
         ctx.session.user = user;
         return ctx.body = {
           success: true,
           redirect: body.next
         };
-      },
-      loginFail: function(type) {
-        switch (type) {
-          case 'usernameError':
-            return ctx.body = {
-              success: false,
-              errorMessage: 'No such user.'
-            };
-          case 'passwordError':
-            return ctx.body = {
-              success: false,
-              errorMessage: 'Wrong password'
-            };
-        }
-      }
-    });
+      case 'usernameError':
+        return ctx.body = {
+          success: false,
+          errorMessage: 'No such user.'
+        };
+      case 'passwordError':
+        return ctx.body = {
+          success: false,
+          errorMessage: 'Wrong password'
+        };
+      default:
+        throw new Error('FATAL ERROR!');
+    }
   });
 
 router
@@ -145,14 +137,39 @@ async function logoutRequired(ctx, next) {
     return next();
 }
 
-async function login(action) {
-  const user = await User.findOne({ username: action.username });
-  if (!user) return action.loginFail('usernameError');
+function login(body) {
+  return new Promise(async (resolve, reject) => {
+    const user = await User.findOne({ username: body.username });
+    if (!user) return resolve({ type: 'usernameError' });
 
-  const passwordMatch = await user.comparePassword(action.password);
-  if (!passwordMatch) return action.loginFail('passwordError');
+    const passwordMatch = await user.comparePassword(body.password);
+    if (!passwordMatch) return resolve({ type: 'passwordError' });
 
-  return action.loginSuccess(user);
+    return resolve({
+      type: 'success',
+      user: user
+    });
+  });
+}
+
+function register(body) {
+  return new Promise(async (resolve, reject) => {
+    let users = await User.find({ username: body.username });
+    if (users.length !== 0) return resolve({ type: 'usernameError' });
+
+    users = await User.find({ email: body.email });
+    if (users.length !== 0) return resolve({ type: 'emailError' });
+
+    const newUser = new User({
+      username: body.username,
+      password: body.password,
+      email:    body.email
+    });
+
+    await newUser.cryptPassword();
+    await newUser.save();
+    return resolve({ type: 'success', user: newUser });
+  });
 }
 
 module.exports = router;
