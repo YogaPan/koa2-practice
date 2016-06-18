@@ -60,7 +60,7 @@ router
   .post('/login', async ctx => {
     const body = ctx.request.body;
 
-    return login({
+    return await login({
       username: body.username,
       password: body.password,
       loginSuccess: function (user) {
