@@ -158,16 +158,16 @@ class ChatApp extends Component {
       leaveChat
     } = this.props.actions;
 
-    socket.on('public', message => {
-      messageRecieve(message);
+    socket.on('public', data => {
+      messageRecieve(`${data.username}: ${data.message}`);
     });
 
-    socket.on('join', count => {
-      joinChat(count, 'One User Join this chat!!');
+    socket.on('join', data => {
+      joinChat(data.count, `${data.username} Join this chat!!`);
     });
 
-    socket.on('leave', count => {
-      leaveChat(count, 'One User leave this chat room.');
+    socket.on('leave', data => {
+      leaveChat(data.count, `${data.username} leave this chat room.`);
     });
   }
 

@@ -12,6 +12,7 @@
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^0.8.6",
+    "cookie": "^0.3.1",
     "ejs": "^2.4.2",
     "koa": "^2.0.0",
     "koa-bodyparser": "^3.1.0",

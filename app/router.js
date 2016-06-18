@@ -2,19 +2,19 @@ const router = require('koa-router')();
 const User = require('./models/user');
 const Post = require('./models/post');
 
-router.get('/', loginRequired, async (ctx) => {
+router.get('/', loginRequired, async ctx => {
   await ctx.render('index.ejs', { user: ctx.session.user });
 });
 
-router.get('/chat', async (ctx) => {
+router.get('/chat', loginRequired, async ctx => {
   await ctx.render('chat.ejs');
 });
 
 router
-  .get('/register', async (ctx) => {
+  .get('/register', async ctx => {
     await ctx.render('register.ejs');
   })
-  .post('/register', async (ctx) => {
+  .post('/register', async ctx => {
     const body = ctx.request.body;
 
     let users = await User.find({ username: body.username });
@@ -54,10 +54,10 @@ router
   });
 
 router
-  .get('/login', async (ctx) => {
+  .get('/login', async ctx => {
     await ctx.render('login.ejs');
   })
-  .post('/login', async (ctx) => {
+  .post('/login', async ctx => {
     const body = ctx.request.body;
 
     const user = await User.findOne({ username: body.username });
@@ -86,13 +86,13 @@ router
   });
 
 router
-  .get('/logout', async (ctx) => {
+  .get('/logout', async ctx => {
     ctx.session = null;
     ctx.redirect('/login');
   });
 
 router
-  .get('/profile/:username', async (ctx) => {
+  .get('/profile/:username', async ctx => {
     const user = await User.findOne({ username: ctx.params.username });
     if (user == null)
       return ctx.status = 404;
@@ -100,17 +100,17 @@ router
   });
 
 router
-  .get('/post', loginRequired, async (ctx) => {
+  .get('/post', loginRequired, async ctx => {
     await ctx.render('post.ejs');
   });
 
 // Restful api
 router
-  .get('/posts/', async (ctx) => {
+  .get('/posts/', async ctx => {
     const posts = await Post.find().populate('_creator', 'username');
     ctx.body = posts;
   })
-  .post('/posts/', async (ctx) => {
+  .post('/posts/', async ctx => {
     const body = ctx.request.body;
     const creator = await User.findById(ctx.session.user._id);
 
