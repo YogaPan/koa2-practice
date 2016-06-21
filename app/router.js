@@ -1,6 +1,7 @@
 const router = require('koa-router')();
 const User = require('./models/user');
 const Post = require('./models/post');
+const Chat = require('./models/chat');
 
 router.get('/', loginRequired, async ctx => {
   await ctx.render('index.ejs', { user: ctx.session.user });
@@ -116,15 +117,18 @@ router
 
     creator.posts.push(newPost._id);
 
-    await newPost.save();
-    await creator.save();
+    await Promise.all([
+      newPost.save(),
+      creator.save()
+    ]);
+
     ctx.body = {
       success: true
     };
   });
 
 async function loginRequired(ctx, next) {
-  if (ctx.session.user)
+  if (!ctx.session.user)
     return next();
   else
     await ctx.redirect(`/login?next=${ctx.path}`);

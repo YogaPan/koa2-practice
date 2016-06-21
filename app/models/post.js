@@ -1,19 +1,9 @@
 const mongoose = require('mongoose');
 
 const PostSchema = mongoose.Schema({
-  _creator: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User'
-  },
-  title: {
-    type: String,
-    required: true,
-    trim: true
-  },
-  content: {
-    type: String,
-    required: true
-  }
+  _creator: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+  title: { type: String, required: true, trim: true },
+  content: { type: String, required: true }
 }, {
   timestamps: true
 });
@@ -23,6 +13,6 @@ PostSchema.methods.test = function() {
 
 }
 
-const Post = mongoose.model('Post', PostSchema);
+const PostModel = mongoose.model('Post', PostSchema);
 
-module.exports = Post;
+module.exports = PostModel;

@@ -1,25 +1,17 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt')
 
-const userSchema = mongoose.Schema({
-  username: {
-    type: String,
-    isRequired: true
-  },
-  password: {
-    type: String,
-    isRequired: true
-  },
-  email: {
-    type: String,
-    isRequired: true
-  },
-  posts: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Post' }]
+const UserSchema = mongoose.Schema({
+  username: { type: String, isRequired: true },
+  password: { type: String, isRequired: true },
+  email: { type: String, isRequired: true },
+  posts: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Post' }],
+  chats: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Chat' }]
 }, {
   timestamps: true
 });
 
-userSchema.methods.cryptPassword = function() {
+UserSchema.methods.cryptPassword = function() {
   return new Promise((resolve, reject) => {
     bcrypt.genSalt(10, (err, salt) => {
       if (err) return reject(err);
@@ -34,7 +26,7 @@ userSchema.methods.cryptPassword = function() {
   });
 };
 
-userSchema.methods.comparePassword = function(userPassword) {
+UserSchema.methods.comparePassword = function(userPassword) {
   return new Promise((resolve, reject) => {
     bcrypt.compare(userPassword, this.password, (err, isPasswordMatch) => {
       if (err)
@@ -45,6 +37,6 @@ userSchema.methods.comparePassword = function(userPassword) {
   });
 };
 
-const User = mongoose.model('User', userSchema);
+const UserModel = mongoose.model('User', UserSchema);
 
-module.exports = User;
+module.exports = UserModel;

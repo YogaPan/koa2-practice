@@ -1,4 +1,6 @@
 const cookie = require('cookie');
+const User = require('./models/user.js');
+const Chat = require('./models/chat.js');
 
 module.exports = function(io) {
   // Socket.io middleware.
@@ -15,31 +17,40 @@ module.exports = function(io) {
   let count = 0;
 
   // Get client socket and start listening.
-  io.on('connection', socket => {
+  io.on('connection', async socket => {
     // When a new user join chatting.
     count++;
-    const username = socket.request.user.username;
+    const user = await User.findById(socket.request.user._id);
+
     io.emit('join', {
       count,
-      username
+      username: user.username
     });
-    console.log(socket.request.user.username);
 
     // When a user leave this chat.
     socket.on('disconnect', () => {
       count--;
       io.emit('leave', {
         count,
-        username
+        username: user.username
       });
     });
 
     // When someone say something.
-    socket.on('public', message => {
+    socket.on('public', async message => {
       io.emit('public', {
-        username,
+        username: user.username,
         message
       });
+
+      const newChat = new Chat({
+        _creator: user._id,
+        message: message
+      });
+      user.chats.push(newChat._id);
+
+      newChat.save();
+      user.save()
     });
   });
-}
+};
