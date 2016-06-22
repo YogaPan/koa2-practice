@@ -117,10 +117,8 @@ router
 
     creator.posts.push(newPost._id);
 
-    await Promise.all([
-      newPost.save(),
-      creator.save()
-    ]);
+    newPost.save();
+    creator.save();
 
     ctx.body = {
       success: true
@@ -141,12 +139,12 @@ async function logoutRequired(ctx, next) {
     return next();
 }
 
-function login(body) {
+function login(form) {
   return new Promise(async (resolve, reject) => {
-    const user = await User.findOne({ username: body.username });
+    const user = await User.findOne({ username: form.username });
     if (!user) return resolve({ type: 'usernameError' });
 
-    const passwordMatch = await user.comparePassword(body.password);
+    const passwordMatch = await user.comparePassword(form.password);
     if (!passwordMatch) return resolve({ type: 'passwordError' });
 
     return resolve({
@@ -156,18 +154,18 @@ function login(body) {
   });
 }
 
-function register(body) {
+function register(form) {
   return new Promise(async (resolve, reject) => {
-    let users = await User.find({ username: body.username });
+    let users = await User.find({ username: form.username });
     if (users.length !== 0) return resolve({ type: 'usernameError' });
 
-    users = await User.find({ email: body.email });
+    users = await User.find({ email: form.email });
     if (users.length !== 0) return resolve({ type: 'emailError' });
 
     const newUser = new User({
-      username: body.username,
-      password: body.password,
-      email:    body.email
+      username: form.username,
+      password: form.password,
+      email:    form.email
     });
 
     await newUser.cryptPassword();
