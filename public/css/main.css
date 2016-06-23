@@ -146,8 +146,6 @@ address, caption, cite, code, dfn, th, var {
 input {
   /* style */
   border-radius: 10px;
-//  background-color: #2d3035;
-  //color: white;
   width: 190px;
   font-size: 15px;
   padding: 10px;
