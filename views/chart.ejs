@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>D3.js</title>
+    <meta charset="utf-8" />
+  </head>
+  <body>
+    <p>Test</p>
+    <p>Test</p>
+    <p>Test</p>
+    <p>Test</p>
+    <script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+    <script>
+      d3.select("body").style("background-color", "#888888");
+      d3.selectAll("p")
+        .data([4, 8, 15, 16, 23, 42])
+        .style("font-size", function(d) { return d + "px"; });
+    </script>
+  </body>
+</html>

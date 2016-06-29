@@ -11,6 +11,10 @@ router.get('/chat', loginRequired, async ctx => {
   await ctx.render('chat.ejs');
 });
 
+router.get('/chart', async ctx => {
+  await ctx.render('chart.ejs');
+});
+
 router
   .get('/register', async ctx => {
     await ctx.render('register.ejs');
